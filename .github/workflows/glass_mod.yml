@@ -1,4 +1,4 @@
-name: Build Insta Glass 2026 - REAndroid Edition
+name: Build Insta Glass 2026 - Ultimate Precision
 
 on:
   workflow_dispatch:
@@ -12,60 +12,59 @@ jobs:
         with:
           lfs: true
 
-      - name: Setup Java 21 (Modern Runtime)
+      - name: Setup Java 21
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '21'
 
-      - name: Install REAndroid APKEditor & Signer
+      - name: Install Tools via GitHub CLI (Modern 2026 Way)
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          # تحميل أحدث إصدار من محرك REAndroid APKEditor
-          wget https://github.com/REAndroid/APKEditor/releases/latest/download/APKEditor.jar -O apkeditor.jar
-          # تحميل موقع توقيع التطبيقات الاحترافي
-          wget https://github.com/patrickfav/uber-apk-signer/releases/latest/download/uber-apk-signer.jar -O signer.jar
+          # استخدام gh CLI لضمان تحميل الأداة مهما كان اسمها
+          gh release download --repo REAndroid/APKEditor --pattern "APKEditor*.jar" --output apkeditor.jar
+          gh release download --repo patrickfav/uber-apk-signer --pattern "*.jar" --output signer.jar
 
-      - name: 🔓 Advanced Decompile (REAndroid Engine)
-        # محرك REAndroid بيتعامل مع حماية Meta بذكاء فطري
+      - name: 🔓 Professional Decode
         run: java -jar apkeditor.jar d -i instagram.apk -o Insta_Dir
 
-      - name: 💎 Precision Glass Injection (Every Millimeter)
+      - name: 💎 Millimeter Precision Glass Mod (The Ultimate Polish)
         run: |
-          echo "جاري حقن التصميم الزجاجي 2026..."
+          echo "حقن التصميم الزجاجي المتطور..."
           
-          # 1. تفعيل الشفافية في ملفات الـ Styles (اللوجين وكل الشاشات)
+          # 1. الشفافية الكاملة وتفعيل رؤية ورق حائط الموبايل (Wallpaper)
           find Insta_Dir/res -name "styles.xml" -exec sed -i '/<style name="Base.Theme.Instagram"/a \        <item name="android:windowBackground">@android:color/transparent</item>\n        <item name="android:windowIsTranslucent">true</item>\n        <item name="android:windowShowWallpaper">true</item>' {} +
 
           # 2. تحويل كل مليمتر في الألوان لزجاج (Light Mode)
+          # استهداف الخلفيات، أزرار تسجيل الدخول، وشريط التنقل
           find Insta_Dir/res -name "colors.xml" -exec sed -i -E 's/name="igds_primary_background">[^<]+/name="igds_primary_background">#66ffffff/g' {} +
           find Insta_Dir/res -name "colors.xml" -exec sed -i -E 's/name="igds_secondary_background">[^<]+/name="igds_secondary_background">#33ffffff/g' {} +
-          find Insta_Dir/res -name "button_background">[^<]+/name="button_background">#4dffffff/g' {} +
-          find Insta_Dir/res -name "igds_primary_button">[^<]+/name="igds_primary_button">#4dffffff/g' {} +
+          find Insta_Dir/res -name "colors.xml" -exec sed -i -E 's/name="button_background">[^<]+/name="button_background">#4dffffff/g' {} +
+          find Insta_Dir/res -name "colors.xml" -exec sed -i -E 's/name="igds_primary_button">[^<]+/name="igds_primary_button">#4dffffff/g' {} +
+          find Insta_Dir/res -name "colors.xml" -exec sed -i -E 's/name="igds_tab_bar_background">[^<]+/name="igds_tab_bar_background">#26ffffff/g' {} +
           
-          # 3. تعديل الوضع الليلي ليكون "زجاج داكن عميق"
+          # 3. تعديل الوضع الليلي (Dark Deep Glass)
           if [ -d Insta_Dir/res/values-night ]; then
             find Insta_Dir/res/values-night -name "colors.xml" -exec sed -i -E 's/name="igds_primary_background">[^<]+/name="igds_primary_background">#80000000/g' {} +
             find Insta_Dir/res/values-night -name "colors.xml" -exec sed -i -E 's/name="igds_secondary_background">[^<]+/name="igds_secondary_background">#4d000000/g' {} +
             find Insta_Dir/res/values-night -name "colors.xml" -exec sed -i -E 's/name="ig_splash_screen_background">[^<]+/name="ig_splash_screen_background">#00000000/g' {} +
           fi
 
-      - name: 🛡️ Self-Healing (Bypassing Meta Traps)
+      - name: 🛡️ Anti-Trap Cleaning (Self-Healing)
         run: |
-          # حذف ملفات layouts الوهمية
+          # حذف أي فخاخ برمجية من إنستجرام
           find Insta_Dir/res -name "layouts.xml" -delete
-          # مسح علامة $ من المراجع لضمان توافق aapt2
           find Insta_Dir/res -type f -name "*.xml" -exec sed -i 's/\$//g' {} +
-          sed -i '/name="\$[^"]*"/d' Insta_Dir/res/values/public.xml || true
 
-      - name: 🏗️ Atomic Build (REAndroid Power)
-        # محرك REAndroid بيقوم بعملية الـ Merge والـ Build بدقة خرافية
-        run: java -jar apkeditor.jar b -i Insta_Dir -o InstaGlass_Final_2026.apk
+      - name: 🏗️ Atomic Build (REAndroid Engine)
+        run: java -jar apkeditor.jar b -i Insta_Dir -o InstaGlass_2026.apk
 
-      - name: ✍️ Final Signing
-        run: java -jar signer.jar -a InstaGlass_Final_2026.apk
+      - name: ✍️ Professional Sign
+        run: java -jar signer.jar -a InstaGlass_2026.apk
 
-      - name: 📤 Delivery
+      - name: 📤 Deliver
         uses: actions/upload-artifact@v4
         with:
-          name: Instagram_REAndroid_Glass_2026
+          name: Instagram_Ultra_Glass_Final
           path: '*-aligned-debugSigned.apk'
