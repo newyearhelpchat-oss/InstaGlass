@@ -1,4 +1,4 @@
-name: Build Insta Glass Ultra 2026 - Tactical Edition
+name: Build Insta Glass 2026 - Master Integrated
 
 on:
   workflow_dispatch:
@@ -12,48 +12,61 @@ jobs:
         with:
           lfs: true
 
-      - name: Setup Java
+      - name: Setup Java 21 (Modern Standard)
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: 'zulu'
+          java-version: '21'
 
-      - name: Install Tools
+      - name: Install 2026 Power Tools
         run: |
-          wget https://github.com/iBotPeaches/Apktool/releases/download/v2.9.3/apktool_2.9.3.jar -O apktool.jar
-          sudo cp apktool.jar /usr/local/bin/apktool.jar
+          # تحميل APKEditor - الأداة الأقوى لتخطي حمايات Meta
+          wget https://github.com/RE-Softs/APKEditor/releases/download/v1.4.0/APKEditor-1.4.0.jar -O apkeditor.jar
           wget https://github.com/patrickfav/uber-apk-signer/releases/download/v1.3.0/uber-apk-signer-1.3.0.jar -O signer.jar
 
-      - name: 🚀 Tactical Decompile (Fast & Safe)
-        # هنا السر: بنفك الـ Resources فقط وبنسيب الأكواد والمجلدات المعقدة مقفولة
-        run: java -jar apktool.jar d instagram.apk -o Insta -f -r
+      - name: 🔓 Advanced Decode
+        # استخدام APKEditor بيفك الموارد بذكاء وبدون أخطاء الـ $ المشهورة
+        run: java -jar apkeditor.jar d -i instagram.apk -o Insta_WorkDir
 
-      - name: ✨ Inject Glass UI (Targeted)
+      - name: 🛡️ Self-Healing & Logic Fix
         run: |
-          echo "حقن الشفافية والزجاج..."
-          # 1. تفعيل الشفافية في النظام
-          sed -i '/<style name="Base.Theme.Instagram"/a \        <item name="android:windowBackground">@android:color/transparent</item>\n        <item name="android:windowIsTranslucent">true</item>' Insta/res/values/styles.xml
+          echo "جاري تنظيف وتصحيح أي أخطاء محتملة..."
+          # حذف أي ملفات وهمية (Layouts) قد تعطل البناء
+          find Insta_WorkDir -name "layouts.xml" -delete
+          # تصحيح مراجع علامة $ في كل ملفات الـ XML لضمان عدم وجود Missing Resources
+          find Insta_WorkDir/res -type f -name "*.xml" -exec sed -i 's/\$//g' {} +
+          find Insta_WorkDir/res -type f -name "\$*" | while read f; do mv "$f" "${f//\$/}"; done || true
 
-          # 2. تحويل الخلفيات لزجاج (Light Mode)
-          sed -i -E 's/name="igds_primary_background">#ffffffff/name="igds_primary_background">#80ffffff/g' Insta/res/values/colors.xml
-          sed -i -E 's/name="igds_secondary_background">[^<]+/name="igds_secondary_background">#40ffffff/g' Insta/res/values/colors.xml
-          sed -i -E 's/name="button_background">[^<]+/name="button_background">#33ffffff/g' Insta/res/values/colors.xml
+      - name: 💎 Glass UI Injection (Buttons, Login, Navigation)
+        run: |
+          echo "حقن التصميم الزجاجي (الدقة بالمللي)..."
+          
+          # 1. الشفافية الكاملة للواجهة (Styles)
+          find Insta_WorkDir/res -name "styles.xml" -exec sed -i '/<style name="Base.Theme.Instagram"/a \        <item name="android:windowBackground">@android:color/transparent</item>\n        <item name="android:windowIsTranslucent">true</item>\n        <item name="android:windowShowWallpaper">true</item>' {} +
 
-          # 3. تحويل الخلفيات لزجاج (Night Mode)
-          if [ -f Insta/res/values-night/colors.xml ]; then
-            sed -i -E 's/name="igds_primary_background">[^<]+/name="igds_primary_background">#80000000/g' Insta/res/values-night/colors.xml
-            sed -i -E 's/name="igds_secondary_background">[^<]+/name="igds_secondary_background">#40000000/g' Insta/res/values-night/colors.xml
-          fi
+          # 2. تحويل الخلفيات لزجاج مصنفر (Colors)
+          # استهداف الخلفية الأساسية، الخلفية الثانوية، والـ Bottom Sheets
+          find Insta_WorkDir/res -name "colors.xml" -exec sed -i -E 's/name="igds_primary_background">[^<]+/name="igds_primary_background">#66ffffff/g' {} +
+          find Insta_WorkDir/res -name "colors.xml" -exec sed -i -E 's/name="igds_secondary_background">[^<]+/name="igds_secondary_background">#40ffffff/g' {} +
+          
+          # 3. الأزرار الزجاجية (تسجيل الدخول + أزرار التنقل)
+          # تحويل أي زرار لمستطيل دائري زجاجي شفاف
+          find Insta_WorkDir/res -name "colors.xml" -exec sed -i -E 's/name="button_background">[^<]+/name="button_background">#4dffffff/g' {} +
+          find Insta_WorkDir/res -name "colors.xml" -exec sed -i -E 's/name="igds_primary_button">[^<]+/name="igds_primary_button">#4dffffff/g' {} +
 
-      - name: 🛠️ Force Rebuild (No Traps)
-        # هنا بنبني مع تجاهل الأخطاء البسيطة في الموارد غير المستخدمة
-        run: java -jar apktool.jar b Insta -o InstaGlass_Unsigned.apk --use-aapt2
+          # 4. إصلاح الوضع الليلي (Dark Glass)
+          find Insta_WorkDir/res/values-night -name "colors.xml" -exec sed -i -E 's/name="igds_primary_background">[^<]+/name="igds_primary_background">#80000000/g' {} +
+          find Insta_WorkDir/res/values-night -name "colors.xml" -exec sed -i -E 's/name="igds_secondary_background">[^<]+/name="igds_secondary_background">#4d000000/g' {} +
 
-      - name: ✍️ Final Sign
-        run: java -jar signer.jar -a InstaGlass_Unsigned.apk
+      - name: 🏗️ Master Build
+        # محرك بناء APKEditor أذكى بكتير في تخطي الـ Error والـ Warnings
+        run: java -jar apkeditor.jar b -i Insta_WorkDir -o Insta_Glass_2026.apk
 
-      - name: 📤 Upload Result
+      - name: ✍️ Final Signing
+        run: java -jar signer.jar -a Insta_Glass_2026.apk
+
+      - name: 📤 Upload Finished Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Instagram_Glass_2026_Ready
+          name: Instagram_Master_Glass_2026
           path: '*-aligned-debugSigned.apk'
