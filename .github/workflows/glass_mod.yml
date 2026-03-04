@@ -1,4 +1,4 @@
-name: Build Insta Glass Mod
+name: Build Insta Glass Ultra
 
 on:
   workflow_dispatch:
@@ -9,24 +9,6 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
-        with:
-          lfs: true
-        with:
-          lfs: true
-        with:
-          lfs: true
-        with:
-          lfs: true
-        with:
-          lfs: true
-        with:
-          lfs: true
-        with:
-          lfs: true
-        with:
-          lfs: true
-        with:
-          lfs: true
         with:
           lfs: true
 
@@ -48,18 +30,29 @@ jobs:
       - name: Decompile APK
         run: apktool d instagram.apk -o Insta -f
 
-      - name: Apply Glass Mod (Styles & Colors)
+      - name: Apply Ultra Glass Mod (Login, Nav, Buttons)
         run: |
+          # 1. تفعيل الشفافية الشاملة على مستوى التطبيق
           sed -i '/<style name="Base.Theme.Instagram"/a \        <item name="android:windowBackground">@android:color/transparent</item>\n        <item name="android:windowIsTranslucent">true</item>' Insta/res/values/styles.xml
-          sed -i -E 's/<color name="igds_primary_background">[^<]+<\/color>/<color name="igds_primary_background">#80ffffff<\/color>/g' Insta/res/values/colors.xml
+
+          # 2. الوضع العادي (زجاج فاتح للخلفيات والأزرار والتنقل)
+          sed -i -E 's/<color name="igds_primary_background">[^<]+<\/color>/<color name="igds_primary_background">#66ffffff<\/color>/g' Insta/res/values/colors.xml
           sed -i -E 's/<color name="igds_secondary_background">[^<]+<\/color>/<color name="igds_secondary_background">#40ffffff<\/color>/g' Insta/res/values/colors.xml
-          sed -i -E 's/<color name="igds_elevated_background">[^<]+<\/color>/<color name="igds_elevated_background">#b3ffffff<\/color>/g' Insta/res/values/colors.xml
-          sed -i -E 's/<color name="igds_primary_background">[^<]+<\/color>/<color name="igds_primary_background">#80000000<\/color>/g' Insta/res/values-night/colors.xml
+          sed -i -E 's/<color name="igds_elevated_background">[^<]+<\/color>/<color name="igds_elevated_background">#4dffffff<\/color>/g' Insta/res/values/colors.xml
+          sed -i -E 's/<color name="button_background">[^<]+<\/color>/<color name="button_background">#33ffffff<\/color>/g' Insta/res/values/colors.xml
+          sed -i -E 's/<color name="igds_primary_button">[^<]+<\/color>/<color name="igds_primary_button">#4dffffff<\/color>/g' Insta/res/values/colors.xml
+          sed -i -E 's/<color name="bottom_sheet_background">[^<]+<\/color>/<color name="bottom_sheet_background">#4dffffff<\/color>/g' Insta/res/values/colors.xml
+
+          # 3. الوضع الليلي (زجاج داكن أنيق للخلفيات والأزرار والتنقل)
+          sed -i -E 's/<color name="igds_primary_background">[^<]+<\/color>/<color name="igds_primary_background">#66000000<\/color>/g' Insta/res/values-night/colors.xml
           sed -i -E 's/<color name="igds_secondary_background">[^<]+<\/color>/<color name="igds_secondary_background">#40000000<\/color>/g' Insta/res/values-night/colors.xml
-          sed -i -E 's/<color name="igds_elevated_background">[^<]+<\/color>/<color name="igds_elevated_background">#b3000000<\/color>/g' Insta/res/values-night/colors.xml
+          sed -i -E 's/<color name="igds_elevated_background">[^<]+<\/color>/<color name="igds_elevated_background">#4d000000<\/color>/g' Insta/res/values-night/colors.xml
+          sed -i -E 's/<color name="button_background">[^<]+<\/color>/<color name="button_background">#33000000<\/color>/g' Insta/res/values-night/colors.xml
+          sed -i -E 's/<color name="igds_primary_button">[^<]+<\/color>/<color name="igds_primary_button">#4d000000<\/color>/g' Insta/res/values-night/colors.xml
+          sed -i -E 's/<color name="bottom_sheet_background">[^<]+<\/color>/<color name="bottom_sheet_background">#4d000000<\/color>/g' Insta/res/values-night/colors.xml
           sed -i -E 's/<color name="ig_splash_screen_background">[^<]+<\/color>/<color name="ig_splash_screen_background">#00000000<\/color>/g' Insta/res/values-night/colors.xml
 
-      - name: Fix $ File Names (Just in case)
+      - name: Fix Anti-Mod Traps ($, layouts.xml)
         run: |
           find Insta/res -type f -name "\$*" | while read file; do dir=$(dirname "$file"); base=$(basename "$file"); newbase=$(echo "$base" | tr '$' '_'); mv "$file" "$dir/$newbase"; done
           find Insta/res -type f -name "*.xml" -exec sed -i 's/@drawable\/\$/@drawable\/_/g' {} +
@@ -74,5 +67,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Instagram_Glass_Mod
+          name: Instagram_Glass_Ultra
           path: '*-aligned-debugSigned.apk'
