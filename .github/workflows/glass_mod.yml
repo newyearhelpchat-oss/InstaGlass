@@ -21,7 +21,7 @@ jobs:
       - name: Install Apktool & Signer
         run: |
           wget https://raw.githubusercontent.com/iBotPeaches/Apktool/master/scripts/linux/apktool
-          wget https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.9.3.jar -O apktool.jar
+          wget https://github.com/iBotPeaches/Apktool/releases/download/v2.9.3/apktool_2.9.3.jar -O apktool.jar
           sudo mv apktool apktool.jar /usr/local/bin/
           sudo chmod +x /usr/local/bin/apktool
           sudo chmod +x /usr/local/bin/apktool.jar
@@ -32,10 +32,10 @@ jobs:
 
       - name: Apply Ultra Glass Mod (Login, Nav, Buttons)
         run: |
-          # 1. تفعيل الشفافية الشاملة على مستوى التطبيق
+          # تفعيل الشفافية الشاملة
           sed -i '/<style name="Base.Theme.Instagram"/a \        <item name="android:windowBackground">@android:color/transparent</item>\n        <item name="android:windowIsTranslucent">true</item>' Insta/res/values/styles.xml
 
-          # 2. الوضع العادي (زجاج فاتح للخلفيات والأزرار والتنقل)
+          # الوضع العادي
           sed -i -E 's/<color name="igds_primary_background">[^<]+<\/color>/<color name="igds_primary_background">#66ffffff<\/color>/g' Insta/res/values/colors.xml
           sed -i -E 's/<color name="igds_secondary_background">[^<]+<\/color>/<color name="igds_secondary_background">#40ffffff<\/color>/g' Insta/res/values/colors.xml
           sed -i -E 's/<color name="igds_elevated_background">[^<]+<\/color>/<color name="igds_elevated_background">#4dffffff<\/color>/g' Insta/res/values/colors.xml
@@ -43,7 +43,7 @@ jobs:
           sed -i -E 's/<color name="igds_primary_button">[^<]+<\/color>/<color name="igds_primary_button">#4dffffff<\/color>/g' Insta/res/values/colors.xml
           sed -i -E 's/<color name="bottom_sheet_background">[^<]+<\/color>/<color name="bottom_sheet_background">#4dffffff<\/color>/g' Insta/res/values/colors.xml
 
-          # 3. الوضع الليلي (زجاج داكن أنيق للخلفيات والأزرار والتنقل)
+          # الوضع الليلي
           sed -i -E 's/<color name="igds_primary_background">[^<]+<\/color>/<color name="igds_primary_background">#66000000<\/color>/g' Insta/res/values-night/colors.xml
           sed -i -E 's/<color name="igds_secondary_background">[^<]+<\/color>/<color name="igds_secondary_background">#40000000<\/color>/g' Insta/res/values-night/colors.xml
           sed -i -E 's/<color name="igds_elevated_background">[^<]+<\/color>/<color name="igds_elevated_background">#4d000000<\/color>/g' Insta/res/values-night/colors.xml
@@ -52,7 +52,7 @@ jobs:
           sed -i -E 's/<color name="bottom_sheet_background">[^<]+<\/color>/<color name="bottom_sheet_background">#4d000000<\/color>/g' Insta/res/values-night/colors.xml
           sed -i -E 's/<color name="ig_splash_screen_background">[^<]+<\/color>/<color name="ig_splash_screen_background">#00000000<\/color>/g' Insta/res/values-night/colors.xml
 
-      - name: Fix Anti-Mod Traps ($, layouts.xml)
+      - name: Fix Anti-Mod Traps
         run: |
           find Insta/res -type f -name "\$*" | while read file; do dir=$(dirname "$file"); base=$(basename "$file"); newbase=$(echo "$base" | tr '$' '_'); mv "$file" "$dir/$newbase"; done
           find Insta/res -type f -name "*.xml" -exec sed -i 's/@drawable\/\$/@drawable\/_/g' {} +
